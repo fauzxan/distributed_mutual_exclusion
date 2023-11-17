@@ -1,7 +1,8 @@
 package main
 
 import (
-	"core/client"
+	// "container/heap"
+	"core.com/client"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -22,6 +23,8 @@ func showmenu(){
 	system.Println("Press 1 to make request to enter CS")
 	system.Println("Press 2 to show local vector clock")
 	system.Println("Press 3 to show local clientlist")
+	system.Println("Press 4 to show local priority queue")
+	system.Println("Press 5 to show value in CS")
 	system.Println("Press m to see the menu")
 	system.Println("********************************")
 }
@@ -93,11 +96,15 @@ func main(){
 
 		switch input{
 		case "1":
-			
+			go me.ModifyCriticalSection()
 		case "2":
 			system.Println("My vector clock:", me.ShowClock())
 		case "3":
-			system.Println("My clientlist:", me.Printclients())
+			system.Println("My clientlist:", me.Showclients())
+		case "4":
+			system.Println("My Priority Queue:", me.ShowPriorityQueue())
+		case "5":
+			system.Println("Value in CS:", me.ShowCSValue())
 		default:
 			system.Println("Enter a valid option!!!")
 		}
