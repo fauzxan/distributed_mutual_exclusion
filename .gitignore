@@ -20,3 +20,4 @@
 # Go workspace file
 go.work
 lamport_priority_queue_mutex/core
+lamport_priority_queue_mutex/clientlist.json
