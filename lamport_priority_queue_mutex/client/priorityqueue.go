@@ -1,42 +1,41 @@
 package client
 
 import (
-	"github.com/fatih/color"
+
 )
 
-var systempq = color.New(color.FgHiMagenta).Add(color.BgBlack)
 
-type PriorityQueue []PqEntry
 
+// PriorityQueue implements a minimum priority queue for PQEntry.
+type PriorityQueue []*PQEntry
+
+// Len returns the number of elements in the priority queue.
 func (pq PriorityQueue) Len() int { return len(pq) }
 
+// Less defines the ordering of elements in the priority queue.
+// It orders based on the lowest timestamp value. In case of a tie,
+// it orders based on the ID.
 func (pq PriorityQueue) Less(i, j int) bool {
-	// We want Pop to give us the highest, not lowest, priority so we use greater than here.
-	return pq[i].timestamp < pq[j].timestamp
+	if pq[i].Timestamp == pq[j].Timestamp {
+		return pq[i].ID < pq[j].ID
+	}
+	return pq[i].Timestamp < pq[j].Timestamp
 }
 
-func (pq PriorityQueue) Swap(i, j int) {
-	pq[i], pq[j] = pq[j], pq[i]
+// Swap swaps the elements with indexes i and j.
+func (pq PriorityQueue) Swap(i, j int) { pq[i], pq[j] = pq[j], pq[i] }
+
+// Push adds an element to the priority queue.
+func (pq *PriorityQueue) Push(x interface{}) {
+	entry := x.(*PQEntry)
+	*pq = append(*pq, entry)
 }
 
-func (pq *PriorityQueue) Push(x any) {
-	item := x.(PqEntry)
-	systempq.Println(item, "is being added to the PQ")
-	*pq = append(*pq, item)
-}
-
-func (pq *PriorityQueue) Pop() any {
+// Pop removes and returns the minimum element from the priority queue.
+func (pq *PriorityQueue) Pop() interface{} {
 	old := *pq
 	n := len(old)
-	item := old[n-1]
-	old[n-1] = PqEntry{}  // avoid memory leak
-	// item.Id = -1 // for safety
-	systempq.Println(item, "has been removed from the PQ")
+	entry := old[n-1]
 	*pq = old[0 : n-1]
-	return item
+	return entry
 }
-
-// update modifies the priority and value of an Item in the queue.
-// func (pq *PriorityQueue) update(item *Client, value string, local int) {
-// 	heap.Fix(pq, item.Id)
-// }

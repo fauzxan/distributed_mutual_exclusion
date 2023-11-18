@@ -46,28 +46,31 @@ func (client *Client) GetUniqueRandom() int {
 }
 
 //  Node utility function to call RPC given a request message, and a destination IP address
-func (client *Client) CallRPC(msg Message, IP string) Message {
+func (client *Client) CallRPC(msg Message, IP string, ch chan <- Message) {
 	system.Println(client.Id, "is sending message of type", msg.Type, "to", IP)
 	clnt, err := rpc.Dial("tcp", IP)
+	msgCopy := msg
 	reply := Message{}
 	if err != nil {
 		system.Println("Error Dialing RPC:", err)
 		system.Println("Received reply", reply)
-		return reply
+		ch <- reply
+		return 
 	}
-	err = clnt.Call("Client.HandleIncomingMessage", msg, &reply)
+	err = clnt.Call("Client.HandleIncomingMessage", msgCopy, &reply)
 	if err != nil {
 		system.Println("Faced an error trying to call RPC:", err)
 		system.Println("Received reply", reply)
-		return reply
+		ch <- reply
+		return 
 	}
 	system.Println("Received reply", reply, "from", IP)
-	return reply
+	ch <- reply
 }
 
 func (client *Client) UpdateLocalClock(){
 	client.LocalClock ++
-	client.Vectorclock[client.Id] = client.LocalClock
+	// client.Vectorclock[client.Id] = client.LocalClock
 }
 
 /*
@@ -103,12 +106,12 @@ func (client *Client) IsSmaller(mine []int, other []int) bool{
 	return true
 }
 
-func (client *Client) CheckIfInPQ() bool{
-	for _, entry := range client.PQ {
-		if entry.pid == client.Id {return true}
-	}
-	return false
-}
+// func (client *Client) CheckIfInPQ() bool{
+// 	for _, entry := range client.PQ {
+// 		if entry.pid == client.Id {return true}
+// 	}
+// 	return false
+// }
 
 // Go through pq, and see if your own entry is before or after the parameter
 // func (client *Client) CheckPos(other int) string{
@@ -123,13 +126,13 @@ func (client *Client) CheckIfInPQ() bool{
 // 	return ""
 // }
 
-func (client *Client) ShowClock() []int{
-	return client.Vectorclock
-}
+// func (client *Client) ShowClock() []int{
+// 	return client.Vectorclock
+// }
 
 func (client *Client) ShowPriorityQueue() []int{
 	var pq []int
-	for _, entry := range client.PQ{pq = append(pq, entry.pid)}
+	for _, entry := range client.PQ{pq = append(pq, entry.ID)}
 	system.Println(client.PQ)
 	return pq
 }
