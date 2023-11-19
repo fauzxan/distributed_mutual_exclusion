@@ -203,7 +203,7 @@ func (client *Client) ResponseHandler(from []int, fromId int, remoteTime int, ch
 
 func (client *Client) ReleaseSender(value int) {
 	system.Println(client.Id, "is releasing...")
-	entry := heap.Pop(&client.PQ).(*PQEntry) // This should be you	r own
+	entry := heap.Pop(&client.PQ).(*PQEntry) // This should be your own
 	system.Println(entry, "popped")
 	client.RequestTimeStamp = INF
 	responseList := 0
