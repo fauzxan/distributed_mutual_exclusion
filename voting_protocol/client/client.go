@@ -85,7 +85,6 @@ func (client *Client) HandleIncomingMessage(msg Message, reply *Message) error {
 		case JOIN:
 			client.Clientlist[msg.From] = msg.IP
 			client.listOfResponses = make([]int, len(client.listOfResponses)+1)
-			// client.Vectorclock = append(client.Vectorclock, 0)
 			reply.Type = ACK + JOIN
 		default:
 			system.Println("Invalid message type?? How?") // will never reach this scenario...
@@ -123,7 +122,7 @@ func (client *Client) ModifyCriticalSection(){
 	client.UpdateLocalClock()
 	client.RequestTimeStamp = client.LocalClock
 	systemmodify.Println("Request made at timestamp", client.RequestTimeStamp)
-	// client.listOfResponses[client.Id] = 1
+	
 
 	// Send the request to all the other nodes in the network
 	req := Message{Type: REQUEST, From: client.Id, RemoteTimestamp: client.RequestTimeStamp}
@@ -163,11 +162,7 @@ func (client *Client) ModifyCriticalSection(){
 func (client *Client) ResponseHandler(from []int, fromId int, remoteTime int) {
     isPriorityQueueEmpty := false
     for !isPriorityQueueEmpty {
-        // if client.RequestTimeStamp < remoteTime {
-        //     continue // Don't need to send a response yet if your timestamp is less than remoteTime
-        // }
         count := 0
-
         // Get a copy of the priority queue entries
         entriesCopy := client.PQ.GetEntries()
 		if len(entriesCopy) == 0 {

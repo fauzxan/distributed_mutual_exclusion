@@ -11,6 +11,7 @@ const EQUAL = "equal"
 UTILITY FUNCTIONS
 ***************************
 */
+
 func (client *Client) Getmax() int {
 	client.Lock.Lock()
 	defer client.Lock.Unlock()
@@ -23,11 +24,12 @@ func (client *Client) Getmax() int {
 	return max
 }
 
+/*
+	true means that id is not taken | id is not there in the clientlist
+	false means that id is taken | id is there in the clientlist
+*/
 func (client *Client) Check(n int) bool {
-	/*
-		true means that id is not taken | id is not there in the clientlist
-		false means that id is taken | id is there in the clientlist
-	*/
+
 	for id := range client.Clientlist {
 		if n == id {
 			return false
