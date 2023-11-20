@@ -21,7 +21,6 @@ func showmenu(){
 	system.Println("********************************")
 	system.Println("\t\tMENU")
 	system.Println("Press 1 to make request to enter CS")
-	system.Println("Press 2 to show local vector clock")
 	system.Println("Press 3 to show local clientlist")
 	system.Println("Press 4 to show local priority queue")
 	system.Println("Press 5 to show value in CS")
@@ -52,12 +51,10 @@ func main(){
 		// If I am the only client so far, then I will set my self as both the coordinator, as well as communicate using the port
 		me.Id = 0
 		me.Clientlist[me.Id] = "127.0.0.1:3000"
-		// me.Vectorclock = make([]int, 1)
 	} else {
 		// Otherwise, I will create a new clientid, and also a new port from which I will communicate with
 		me.Id = me.Getmax() + 1
 		me.Clientlist[me.Id] = "127.0.0.1:" + strconv.Itoa(3000+me.Id)
-		// me.Vectorclock = make([]int, 1)
 	}
 
 	// Write back to json file
@@ -97,8 +94,6 @@ func main(){
 		switch input{
 		case "1":
 			go me.ModifyCriticalSection()
-		case "2":
-			// system.Println("My vector clock:", me.ShowClock())
 		case "3":
 			system.Println("My clientlist:", me.Showclients())
 		case "4":

@@ -1,10 +1,5 @@
 package client
 
-import (
-
-)
-
-
 
 // PriorityQueue implements a minimum priority queue for PQEntry.
 type PriorityQueue []*PQEntry

@@ -1,11 +1,8 @@
 package client
 
 import (
-	// "encoding/json"
-	// "os"
 	"container/heap"
 	"math"
-	// "fmt"
 	"math/rand"
 	"sync"
 	"time"
@@ -29,7 +26,6 @@ type Client struct {
 	Id             int
 	Clientlist     map[int]string
 	CS 			   int
-	// Vectorclock	   []int
 	LocalClock	   int 
 	PQ 			   PriorityQueue
 	RequestTimeStamp int
@@ -65,7 +61,6 @@ func (client *Client) HandleIncomingMessage(msg Message, reply *Message) error {
 			// call the function to approve requests
 			responseChannel := make(chan bool)
 			go client.ResponseHandler(msg.Vectorclock, msg.From, msg.RemoteTimestamp, responseChannel)
-			
 			val := <- responseChannel
 			if val{
 				client.UpdateLocalClock()
@@ -136,7 +131,7 @@ func (client *Client) ModifyCriticalSection(){
             continue
         }
 		reply := <-responseChannel
-			// Process the response...
+		// Process the response...
 		req.Responselist = append(req.Responselist, reply.From)
 		client.UpdateLocalClock()
 		systemmodify.Println("Received a response. Response list:", req.Responselist)
@@ -195,7 +190,6 @@ func (client *Client) ResponseHandler(from []int, fromId int, remoteTime int, ch
 				systemresponse.Println(client.RequestTimeStamp, "is greater than", remoteTime, "<-- Scalar Clocks. So I am sending response right away")
 				break
 			} 
-			// systemresponse.Println("Waiting to send response...")
 			continue
 		}
 	}

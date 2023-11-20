@@ -70,34 +70,8 @@ func (client *Client) CallRPC(msg Message, IP string, ch chan <- Message) {
 
 func (client *Client) UpdateLocalClock(){
 	client.LocalClock ++
-	// client.Vectorclock[client.Id] = client.LocalClock
 }
 
-/*
-	Input:
-		V1 is the incoming vector.
-		V2 is the vector on the local process. 
-
-	This function receives two vectors- one from the message that just came in, and one from the local process.
-	It will compare all the elements in one vector to all the elements in the other vector, and:
-	1. See if there are any causality violations
-		If any element in V2 is greater than any element in V2, then there is a causality violation. In this case return []. The receiver will receive this and see that there
-		is a causality violation, and flag it to the terminal. It will still continue running, but there is a potential causality violation. 
-	2. Update each element in V1 and V2 as max(V1.1, V2.1), max(V1.2, V2.2) and so on
-
-	Finally, this function should return the updated V2, which will be places into the receiver process
-*/
-func (client *Client) UpdateVectorClock(V1 []int, V2 []int, from int) []int{
-
-	for i := range V1{
-		if (V2[i] > V1[i] && i == from){
-			// there is a potential causality violation
-			system.Println("There is a potential causality violation!!")
-		}
-		V2[i] = max(V2[i], V1[i])
-	}
-	return V2
-}
 
 func (client *Client) IsSmaller(mine []int, other []int) bool{
 	for index := range mine{
@@ -105,30 +79,6 @@ func (client *Client) IsSmaller(mine []int, other []int) bool{
 	}
 	return true
 }
-
-// func (client *Client) CheckIfInPQ() bool{
-// 	for _, entry := range client.PQ {
-// 		if entry.pid == client.Id {return true}
-// 	}
-// 	return false
-// }
-
-// Go through pq, and see if your own entry is before or after the parameter
-// func (client *Client) CheckPos(other int) string{
-// 	ownIndex := 0
-// 	otherIndex := 0
-// 	for index, node := range client.PQ{
-// 		 if node.Id == other {otherIndex = index}
-// 		 if node == client {ownIndex = index}
-// 	}
-// 	if ownIndex < otherIndex {return BEFORE} else
-// 	if ownIndex > otherIndex {return AFTER}
-// 	return ""
-// }
-
-// func (client *Client) ShowClock() []int{
-// 	return client.Vectorclock
-// }
 
 func (client *Client) ShowPriorityQueue() []int{
 	var pq []int
